@@ -46,11 +46,11 @@ class Item:
         return f"{self.__class__.__name__}(name={self.name!r}, rarity={self.rarity!r}, value={self.value!r})"
 
     def __str__(self) -> str:
-        """TODO (Day 1): a human-readable line — should look like:
-        Iron Sword (Common, 10g)
-        Think about why this differs from __repr__ and when each is used.
         """
-        raise NotImplementedError("TODO (Day 1): implement __str__")
+        Human-readable representation of Item
+                should look like: Iron Sword (Common, 10g)
+        """
+        return f"{self.name} ({self.rarity}, {self.value}g)"
 
     def __eq__(self, other: object) -> bool:
         """(Day 1): two Items are equal when name, rarity AND value
