@@ -74,13 +74,13 @@ class Character:
         """(Day 1): should look like
         Warrior(name='Grom', level=2, hp=30)
         """
-        return f"{self.__class__.__name__}(name={self.name!r}, level={self.level!r}, hp={self.hp!r})"
+        return f"{self.__class__.__name__}(name={self.name!r}, level={self.level}, hp={self.hp})"
 
     def __str__(self) -> str:
         """(Day 1): should look like
         Grom the Warrior (Lv.2, 30 HP)
         """
-        return f"{self.name} the {self.__class__.__name__} (Lv.{self.level!r}, {self.hp!r} HP)"
+        return f"{self.name} the {self.__class__.__name__} (Lv.{self.level}, {self.hp} HP)"
 
     def __eq__(self, other: object) -> bool:
         """TODO (Day 1): two Characters are equal when they're the same
