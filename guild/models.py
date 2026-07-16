@@ -83,10 +83,12 @@ class Character:
         return f"{self.name} the {self.__class__.__name__} (Lv.{self.level}, {self.hp} HP)"
 
     def __eq__(self, other: object) -> bool:
-        """TODO (Day 1): two Characters are equal when they're the same
+        """Two Characters are equal when they're the same
         concrete type, AND have the same name AND the same level.
         """
-        raise NotImplementedError("TODO (Day 1): implement Character.__eq__")
+        if not isinstance(other, self.__class__):
+            raise TypeError(f"{other} is not a {self.__class__.__name__}")
+        return self.level == other.level and self.name == other.name
 
     def __hash__(self) -> int:
         """TODO (Day 1): must stay consistent with __eq__ above."""
