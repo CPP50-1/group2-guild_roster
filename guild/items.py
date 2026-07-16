@@ -71,9 +71,7 @@ class Item:
         Return NotImplemented if `other` isn't an Item.
         """
         if not isinstance(other, Item):
-            raise NotImplementedError('The second element being compared is not of "Item" type')
-        # Implemented as tuple comparison instead of naive two-step approach
-        # as per Victor's recommendation
+            raise TypeError(f"{other.__class__.__name__} is not a {self.__class__.__name__}")
         return (self.rarity, self.value) < (self.rarity, other.value)
 
     def __bool__(self) -> bool:
