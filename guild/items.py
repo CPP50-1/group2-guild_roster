@@ -58,7 +58,7 @@ class Item:
         """
         if not isinstance(other, Item):
             raise NotImplementedError("Non Items comparison not implemented")
-        return self.name == other.name and self.rarity == other.rarity and self.value == other.value
+        return self.rarity == other.rarity and self.value == other.value and self.name == other.name
 
     def __hash__(self) -> int:
         """(Day 1): must stay consistent with __eq__ above — equal
