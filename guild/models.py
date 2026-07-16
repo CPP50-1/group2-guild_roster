@@ -91,8 +91,8 @@ class Character:
         return self.level == other.level and self.name == other.name
 
     def __hash__(self) -> int:
-        """TODO (Day 1): must stay consistent with __eq__ above."""
-        raise NotImplementedError("TODO (Day 1): implement Character.__hash__")
+        """Must stay consistent with __eq__ above."""
+        return hash((self.__class__, self.name, self.level))
 
     def __lt__(self, other: object) -> bool:
         """ (Day 1): order by level — this is what lets a Roster
