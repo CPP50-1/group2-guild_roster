@@ -7,6 +7,7 @@ Rarity and __init__ are given. Your job is the dunder methods below.
 Remember the pairing rule: __eq__ and __hash__ must always be defined
 together and stay consistent, or Item becomes unusable in sets/dicts.
 """
+
 from __future__ import annotations
 
 from functools import total_ordering
@@ -17,6 +18,7 @@ class Rarity(IntEnum):
     """IntEnum so rarities compare naturally (COMMON < RARE < LEGENDARY)
     without any extra work — this is used by Item.__lt__ below.
     """
+
     COMMON = 1
     UNCOMMON = 2
     RARE = 3
@@ -43,7 +45,7 @@ class Item:
         Unambiguous, reconstructable representation of Item.
             should look like: Item(name='Iron Sword', rarity=COMMON, value=10)
         """
-        return f"{self.__class__.__name__}(name={self.name!r}, rarity={self.rarity.name}, value={self.value!r})"
+        return f"{self.__class__.__name__}(name={self.name!r}, rarity={self.rarity.name}, value={self.value})"
 
     def __str__(self) -> str:
         """
