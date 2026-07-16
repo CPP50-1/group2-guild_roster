@@ -52,16 +52,17 @@ class Item:
         raise NotImplementedError("TODO (Day 1): implement __str__")
 
     def __eq__(self, other: object) -> bool:
-        """
-        Will compare name, rarity and value between two Items
+        """(Day 1): two Items are equal when name, rarity AND value
+        all match. Remember to return NotImplemented (not False) if
+        `other` isn't an Item.
         """
         if not isinstance(other, Item):
             raise NotImplementedError("Non Items comparison not implemented")
         return self.name == other.name and self.rarity == other.rarity and self.value == other.value
 
     def __hash__(self) -> int:
-        """
-        Will hash Item using name, rarity and value
+        """(Day 1): must stay consistent with __eq__ above — equal
+        Items must hash equal, or sets/dicts of Item will misbehave.
         """
         return hash((self.name, self.rarity, self.value))
 

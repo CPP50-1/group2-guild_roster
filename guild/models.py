@@ -93,7 +93,7 @@ class Character:
         raise NotImplementedError("TODO (Day 1): implement Character.__hash__")
 
     def __lt__(self, other: object) -> bool:
-        """ Compare Characters levels
+        """ (Day 1): order by level — this is what lets a Roster
         TODO(Day 2) be sorted() directly with no key= needed.
         """
         if not isinstance(other, Character):
@@ -101,7 +101,7 @@ class Character:
         return self.level < other.level
 
     def __bool__(self) -> bool:
-        """True if Character is alive (hp > 0)"""
+        """(Day 1): a character is "truthy" while alive (hp > 0)."""
         return self.hp > 0
 
 
