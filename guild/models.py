@@ -105,7 +105,13 @@ class Character:
         return self.hp > 0
 
     def __format__(self, format_spec: str) -> str:
-       pass
+        if format_spec.lower() == "short":
+            return self.name
+        else:
+        # if format_spec.lower() in ["full", "long"]:
+            return str(self)
+        # raise ValueError("Requested format is invalid or doesn't exist.")
+
 
 
 class Warrior(Character):
