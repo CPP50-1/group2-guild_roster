@@ -99,8 +99,8 @@ class Character:
         raise NotImplementedError("TODO (Day 1): implement Character.__lt__")
 
     def __bool__(self) -> bool:
-        """TODO (Day 1): a character is "truthy" while alive (hp > 0)."""
-        raise NotImplementedError("TODO (Day 1): implement Character.__bool__")
+        """True if Character is alive (hp > 0)"""
+        return self.hp > 0
 
 
 class Warrior(Character):
