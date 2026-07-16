@@ -35,3 +35,9 @@ def test_ordering_by_rarity_then_value():
 def test_bool_reflects_value():
     assert bool(Item("Gold Coin", Rarity.COMMON, 1)) is True
     assert bool(Item("Broken Twig", Rarity.COMMON, 0)) is False
+
+def test_add_valid():
+    a = Item("Iron Sword", Rarity.COMMON, 15)
+    b = Item("Iron Sword", Rarity.COMMON, 10)  # equal to a
+    c = a + b
+    assert (c.name, c.rarity, c.value) == ("Iron Sword", Rarity.COMMON, 25)
