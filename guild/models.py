@@ -74,17 +74,13 @@ class Character:
         """(Day 1): should look like
         Warrior(name='Grom', level=2, hp=30)
         """
-        # I tried looking for a way to make "Warrior" variable, but it's the only
-        # child class of Character that exists at this point of time.
-        return f"Warrior(name='{self.name}', level={self.level}, hp={self.hp})"
+        return f"{self.__class__.name!r}(name='{self.name!r}', level={self.level!r}, hp={self.hp!r})"
 
     def __str__(self) -> str:
         """(Day 1): should look like
         Grom the Warrior (Lv.2, 30 HP)
         """
-        # I tried looking for a way to make "Warrior" variable, but it's the only
-        # child class of Character that exists at this point of time.
-        return f"{self.name} the Warrior (Lv.{self.level}, {self.hp} HP)"
+        return f"{self.name!r} the {self.__class__.name!r} (Lv.{self.level!r}, {self.hp!r} HP)"
 
     def __eq__(self, other: object) -> bool:
         """TODO (Day 1): two Characters are equal when they're the same
@@ -107,6 +103,9 @@ class Character:
     def __bool__(self) -> bool:
         """(Day 1): a character is "truthy" while alive (hp > 0)."""
         return self.hp > 0
+
+    def __format__(self, format_spec: str) -> str:
+       pass
 
 
 class Warrior(Character):
