@@ -16,6 +16,7 @@ fields.py (StringField/IntField) is already working, so Character's
 fields below will validate correctly from Day 1 onward regardless of
 which of the above TODOs you've reached.
 """
+
 from __future__ import annotations
 
 from typing import Dict, Type
@@ -87,7 +88,9 @@ class Character:
         concrete type, AND have the same name AND the same level.
         """
         if not isinstance(other, self.__class__):
-            raise TypeError(f"{other} is not a {self.__class__.__name__}")
+            raise TypeError(
+                f"Expected {self.__class__.__name__} recived {other.__class__.__name__} instead."
+            )
         return self.level == other.level and self.name == other.name
 
     def __hash__(self) -> int:
@@ -137,6 +140,7 @@ class Rogue(Character):
 
 
 # --- Day 4 mixins: horizontal reuse without deep inheritance ---------------
+
 
 class HealerMixin:
     """TODO (Day 4, Dev A/whoever owns this): adds healing behavior.
@@ -192,6 +196,7 @@ class Paladin(HealerMixin, TankMixin, Warrior):
 
 
 # --- Day 4 (independent mixin, not part of the conflict above) ------------
+
 
 class LoggableMixin:
     """TODO (Day 4, other dev): logs every attribute assignment on the
