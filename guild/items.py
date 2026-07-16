@@ -57,7 +57,7 @@ class Item:
         `other` isn't an Item.
         """
         if not isinstance(other, Item):
-            raise NotImplementedError("Non Items comparison not implemented")
+            raise TypeError("Non Items comparison not implemented")
         return self.rarity == other.rarity and self.value == other.value and self.name == other.name
 
     def __hash__(self) -> int:
@@ -86,10 +86,10 @@ class Item:
         should raise TypeError, not silently produce nonsense.
         """
         if not isinstance(other, Item):
-            raise NotImplementedError("Non Items additions not implemented")
+            raise TypeError("Non Items additions not implemented")
 
         if self.rarity != other.rarity or self.name != other.name:
-            raise NotImplementedError("Items must have the same nare and rarity")
+            raise  ValueError("Items must have the same name and rarity")
 
         return Item(self.name, self.rarity, self.value+other.value)
 

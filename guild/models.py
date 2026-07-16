@@ -97,7 +97,7 @@ class Character:
         TODO(Day 2) be sorted() directly with no key= needed.
         """
         if not isinstance(other, Character):
-            raise NotImplementedError("Non Character comparison not implemented")
+            raise TypeError("Can only compare two Characters")
         return self.level < other.level
 
     def __bool__(self) -> bool:
