@@ -77,3 +77,20 @@ class Item:
         a zero-value junk item should be falsy.
         """
         raise NotImplementedError("TODO (Day 1): implement __bool__")
+
+    def __add__(self, other: object) -> Item:
+        """(Day 1 bonus) Add __add__ to Item: combining two Items should only be valid if
+        they share the same name and rarity (i.e. they're stackable copies of
+        the same item), in that case, return a new Item with the same name/
+        rarity and value summed. Combining items with different name/rarity
+        should raise TypeError, not silently produce nonsense.
+        """
+        if not isinstance(other, Item):
+            raise NotImplementedError("Non Items additions not implemented")
+
+        if self.rarity != other.rarity or self.name != other.name:
+            raise NotImplementedError("Items must have the same nare and rarity")
+
+        return Item(self.name, self.rarity, self.value+other.value)
+
+
