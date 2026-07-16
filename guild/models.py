@@ -93,10 +93,12 @@ class Character:
         raise NotImplementedError("TODO (Day 1): implement Character.__hash__")
 
     def __lt__(self, other: object) -> bool:
-        """TODO (Day 1): order by level — this is what lets a Roster
-        (Day 2) be sorted() directly with no key= needed.
+        """ Compare Characters levels
+        TODO(Day 2) be sorted() directly with no key= needed.
         """
-        raise NotImplementedError("TODO (Day 1): implement Character.__lt__")
+        if not isinstance(other, Character):
+            raise NotImplementedError("Non Character comparison not implemented")
+        return self.level < other.level
 
     def __bool__(self) -> bool:
         """True if Character is alive (hp > 0)"""
