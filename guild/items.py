@@ -43,14 +43,14 @@ class Item:
         Unambiguous, reconstructable representation of Item.
             should look like: Item(name='Iron Sword', rarity=COMMON, value=10)
         """
-        return f"{self.__class__.__name__}(name={self.name!r}, rarity={self.rarity!r}, value={self.value!r})"
+        return f"{self.__class__.__name__}(name={self.name!r}, rarity={self.rarity.name}, value={self.value!r})"
 
     def __str__(self) -> str:
         """
         Human-readable representation of Item
                 should look like: Iron Sword (Common, 10g)
         """
-        return f"{self.name} ({self.rarity}, {self.value}g)"
+        return f"{self.name} ({self.rarity.name.capitalize()}, {self.value}g)"
 
     def __eq__(self, other: object) -> bool:
         """(Day 1): two Items are equal when name, rarity AND value
