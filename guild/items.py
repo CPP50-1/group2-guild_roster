@@ -67,16 +67,21 @@ class Item:
         return hash((self.name, self.rarity, self.value))
 
     def __lt__(self, other: object) -> bool:
-        """TODO (Day 1): order by rarity first, then value as a tiebreaker.
+        """(Day 1): order by rarity first, then value as a tiebreaker.
         Return NotImplemented if `other` isn't an Item.
         """
-        raise NotImplementedError("TODO (Day 1): implement __lt__")
+        if not isinstance(other, Item):
+            return NotImplemented
+        # Implemented as tuple comparison instead of naive two-step approach
+        # as per Victor's recommendation
+        return (self.rarity, self.value) < (self.rarity, other.value)
 
     def __bool__(self) -> bool:
-        """TODO (Day 1): an Item is "truthy" if it has any value at all —
+        """(Day 1): an Item is "truthy" if it has any value at all —
         a zero-value junk item should be falsy.
         """
-        raise NotImplementedError("TODO (Day 1): implement __bool__")
+        return self.value > 0
+        # Consider self.value != 0 if negative values need to be treated as truthy.
 
     def __add__(self, other: object) -> Item:
         """(Day 1 bonus) Add __add__ to Item: combining two Items should only be valid if
