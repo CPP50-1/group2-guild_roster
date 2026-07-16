@@ -71,7 +71,7 @@ class Item:
         Return NotImplemented if `other` isn't an Item.
         """
         if not isinstance(other, Item):
-            return NotImplemented
+            raise NotImplementedError('The second element being compared is not of "Item" type')
         # Implemented as tuple comparison instead of naive two-step approach
         # as per Victor's recommendation
         return (self.rarity, self.value) < (self.rarity, other.value)
@@ -80,8 +80,8 @@ class Item:
         """(Day 1): an Item is "truthy" if it has any value at all —
         a zero-value junk item should be falsy.
         """
-        return self.value > 0
         # Consider self.value != 0 if negative values need to be treated as truthy.
+        return self.value > 0
 
     def __add__(self, other: object) -> Item:
         """(Day 1 bonus) Add __add__ to Item: combining two Items should only be valid if
