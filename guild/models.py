@@ -71,16 +71,20 @@ class Character:
     # --- Day 1 dunder set -------------------------------------------------
 
     def __repr__(self) -> str:
-        """TODO (Day 1): should look like
+        """(Day 1): should look like
         Warrior(name='Grom', level=2, hp=30)
         """
-        raise NotImplementedError("TODO (Day 1): implement Character.__repr__")
+        # I tried looking for a way to make "Warrior" variable, but it's the only
+        # child class of Character that exists at this point of time.
+        return f"Warrior(name='{self.name}', level={self.level}, hp={self.hp})"
 
     def __str__(self) -> str:
-        """TODO (Day 1): should look like
+        """(Day 1): should look like
         Grom the Warrior (Lv.2, 30 HP)
         """
-        raise NotImplementedError("TODO (Day 1): implement Character.__str__")
+        # I tried looking for a way to make "Warrior" variable, but it's the only
+        # child class of Character that exists at this point of time.
+        return f"{self.name} the Warrior (Lv.{self.level}, {self.hp} HP)"
 
     def __eq__(self, other: object) -> bool:
         """TODO (Day 1): two Characters are equal when they're the same
