@@ -42,7 +42,7 @@ def battle(
 
             if action == "attack":
                 enemy_hp -= character.level * 2
-                combat_log.append(f"{enemy_name} got pummeled{f"! They have {enemy_hp} remaining." if enemy_hp > 0 else " to death!"}")
+                combat_log.append(f"{enemy_name} got pummeled{f"! They have {enemy_hp} HP remaining." if enemy_hp > 0 else " to death!"}")
 
             elif action == "heal":
                 max_hp = character.base_hp * character.level
