@@ -81,16 +81,16 @@ class Character:
         """(Day 1): should look like
         Grom the Warrior (Lv.2, 30 HP)
         """
-        return f"{self.name} the {self.__class__.__name__} (Lv.{self.level}, {self.hp} HP)"
+        return (
+            f"{self.name} the {self.__class__.__name__} (Lv.{self.level}, {self.hp} HP)"
+        )
 
     def __eq__(self, other: object) -> bool:
         """Two Characters are equal when they're the same
         concrete type, AND have the same name AND the same level.
         """
-        if not isinstance(other, self.__class__):
-            raise TypeError(
-                f"Expected {self.__class__.__name__} recived {other.__class__.__name__} instead."
-            )
+        if not isinstance(other, type(self)):
+            return NotImplemented
         return self.level == other.level and self.name == other.name
 
     def __hash__(self) -> int:
@@ -98,11 +98,11 @@ class Character:
         return hash((self.__class__, self.name, self.level))
 
     def __lt__(self, other: object) -> bool:
-        """ (Day 1): order by level — this is what lets a Roster
+        """(Day 1): order by level — this is what lets a Roster
         TODO(Day 2) be sorted() directly with no key= needed.
         """
         if not isinstance(other, Character):
-            raise TypeError("Can only compare two Characters")
+            return NotImplemented
         return self.level < other.level
 
     def __bool__(self) -> bool:
@@ -112,10 +112,8 @@ class Character:
     def __format__(self, format_spec: str) -> str:
         if format_spec.lower() == "short":
             return self.name
-        # if format_spec.lower() in ["full", "long"]:
+        # Default return. Also works as `if format_spec.lower() in ["full", "long"]:`
         return str(self)
-        # raise ValueError("Requested format is invalid or doesn't exist.")
-
 
 
 class Warrior(Character):
