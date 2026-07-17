@@ -9,6 +9,7 @@ Usage sketch once implemented:
     state = fight.throw(AmbushError()) # simulate an interrupt mid-battle
     fight.close()                      # abandon the fight cleanly
 """
+
 from __future__ import annotations
 
 from typing import Dict, Generator, List
@@ -24,6 +25,7 @@ class AmbushError(GuildError):
     """Raised into the battle generator to simulate a mid-fight ambush —
     exercises Generator.throw() specifically.
     """
+
     pass
 
 
@@ -37,20 +39,21 @@ def battle(
     try:
         combat_log.append(f"{enemy_name} appears!")
         while character.hp > 0 and enemy_hp > 0:
-            state_snapshot = {
-                "character_hp": character.hp,
-                "enemy_hp": enemy_hp
-            }
+            state_snapshot = {"character_hp": character.hp, "enemy_hp": enemy_hp}
             action = yield state_snapshot
 
             if action == "attack":
                 enemy_hp -= character.level * 2
-                combat_log.append(f"{enemy_name} got pummeled{f"! They have {enemy_hp} HP remaining." if enemy_hp > 0 else " to death!"}")
+                combat_log.append(
+                    f"{enemy_name} got pummeled{f'! They have {enemy_hp} HP remaining.' if enemy_hp > 0 else ' to death!'}"
+                )
 
             elif action == "heal":
                 max_hp = character.base_hp * character.level
                 character.hp = min(character.hp + character.level * 2, max_hp)
-                combat_log.append(f"{character.name} is feeling better! HP is now {character.hp}.")
+                combat_log.append(
+                    f"{character.name} is feeling better! HP is now {character.hp}."
+                )
 
             elif action == "flee":
                 combat_log.append(f"{character.name} flees the battle!")
@@ -62,7 +65,9 @@ def battle(
 
             if enemy_hp > 0:
                 character.hp -= enemy_attack
-                combat_log.append(f"Ouch! {character.name} is {f"now down to {character.hp} HP" if character.hp > 0 else f"knocked unconscious!"}")
+                combat_log.append(
+                    f"Ouch! {character.name} is {f'now down to {character.hp} HP' if character.hp > 0 else f'knocked unconscious!'}"
+                )
                 if character.hp <= 0:
                     state_snapshot["outcome"] = "defeat"
 
@@ -108,34 +113,39 @@ def battle(
 
 # bonus method
 def party_battle(
-        characters: tuple[Character, ...],
-        combat_log: List[str],
-        enemy_name: str = "Goblin",
-        enemy_hp: int = 30,
-        enemy_attack: int = 5,
+    characters: tuple[Character, ...],
+    combat_log: List[str],
+    enemy_name: str = "Goblin",
+    enemy_hp: int = 30,
+    enemy_attack: int = 5,
 ) -> Generator[Dict, str, None | int]:
     try:
         combat_log.append(f"{enemy_name} appears!")
-        while (characters[0].hp > 0 or characters[1].hp > 0 or characters[2].hp > 0) and enemy_hp > 0:
+        while (
+            characters[0].hp > 0 or characters[1].hp > 0 or characters[2].hp > 0
+        ) and enemy_hp > 0:
             for character in characters:
                 if character.hp <= 0:
                     continue
                 else:
                     state_snapshot = {
                         "character_hp": character.hp,
-                        "enemy_hp": enemy_hp
+                        "enemy_hp": enemy_hp,
                     }
                     action = yield state_snapshot
 
                     if action == "attack":
                         enemy_hp -= character.level * 2
                         combat_log.append(
-                            f"{enemy_name} got pummeled{f"! They have {enemy_hp} HP remaining." if enemy_hp > 0 else " to death!"}")
+                            f"{enemy_name} got pummeled{f'! They have {enemy_hp} HP remaining.' if enemy_hp > 0 else ' to death!'}"
+                        )
 
                     elif action == "heal":
                         max_hp = character.base_hp * character.level
                         character.hp = min(character.hp + character.level * 2, max_hp)
-                        combat_log.append(f"{character.name} is feeling better! HP is now {character.hp}.")
+                        combat_log.append(
+                            f"{character.name} is feeling better! HP is now {character.hp}."
+                        )
 
                     elif action == "flee":
                         combat_log.append(f"{character.name} flees the battle!")
@@ -151,21 +161,23 @@ def party_battle(
                     random_target = characters[randint(0, 2)]
                 random_target.hp -= enemy_attack
                 combat_log.append(
-                    f"Ouch! {random_target.name} is {f"now down to {random_target.hp} HP" if random_target.hp > 0 else f"knocked unconscious!"}")
+                    f"Ouch! {random_target.name} is {f'now down to {random_target.hp} HP' if random_target.hp > 0 else f'knocked unconscious!'}"
+                )
 
         final_score = sum(character.hp for character in characters) - enemy_hp
 
         yield {
             "outcome": "victory" if enemy_hp <= 0 else "defeat",
-            "final_score": final_score
+            "final_score": final_score,
         }
-
 
         return final_score
 
     except AmbushError:
         random_target = characters[randint(0, 2)]
-        combat_log.append(f"A sneaky {enemy_name} hit {random_target} before you could react!")
+        combat_log.append(
+            f"A sneaky {enemy_name} hit {random_target} before you could react!"
+        )
         random_target.hp -= enemy_attack
         yield {"ambushed": True}
 
@@ -176,7 +188,10 @@ def party_battle(
 # bonus: generating all combinations of 3-character parties and rate them.
 # I chose final HP across the battlefield (negative if enemies win) as measurement.
 
-def determine_best_party(party: List[Character] | None) -> List[tuple[int, tuple[Character, ...]]]:
+
+def determine_best_party(
+    party: List[Character] | None,
+) -> List[tuple[int, tuple[Character, ...]]]:
     if party is None:
         party = [Warrior(name="Grom"), Mage(name="Jaina"), Rogue(name="Valeera")]
     rankings = []
