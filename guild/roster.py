@@ -100,6 +100,7 @@ class OrderedSet:
         return result
 
 
+
 # --- Dev B: memoized callable ------------------------------------------------
 
 class StatCalculator:
