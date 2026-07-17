@@ -30,14 +30,14 @@ def event_quests() -> Iterator[Quest]:
     yield {"name": "Harvest Festival Errand", "reward_gold": 15, "min_level": 1}
 
 
-# --- TODO (Day 3): combine sources with itertools.chain ---------------------
+# --- (Day 3): combine sources with itertools.chain ---------------------
 
 def combined_quest_feed() -> Iterator[Quest]:
-    """TODO: use itertools.chain to treat the three quest sources above as
+    """use itertools.chain to treat the three quest sources above as
     one continuous stream, without materializing any of them into a
     combined list first.
     """
-    raise NotImplementedError("TODO (Day 3): implement combined_quest_feed")
+    return itertools.chain(daily_quests(), guild_quests(), event_quests(),)
 
 
 # --- TODO (Day 3): an infinite source + itertools.islice --------------------
