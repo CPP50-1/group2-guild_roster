@@ -60,8 +60,12 @@ class Item:
         `other` isn't an Item.
         """
         if not isinstance(other, Item):
-            raise TypeError("Non Items comparison not implemented")
-        return self.rarity == other.rarity and self.value == other.value and self.name == other.name
+            return NotImplemented
+        return (
+            self.rarity == other.rarity
+            and self.value == other.value
+            and self.name == other.name
+        )
 
     def __hash__(self) -> int:
         """(Day 1): must stay consistent with __eq__ above — equal
@@ -74,7 +78,7 @@ class Item:
         Return NotImplemented if `other` isn't an Item.
         """
         if not isinstance(other, Item):
-            raise TypeError(f"{other.__class__.__name__} is not a {self.__class__.__name__}")
+            return NotImplemented
         return (self.rarity, self.value) < (self.rarity, other.value)
 
     def __bool__(self) -> bool:
@@ -95,8 +99,6 @@ class Item:
             raise TypeError("Non Items additions not implemented")
 
         if self.rarity != other.rarity or self.name != other.name:
-            raise  ValueError("Items must have the same name and rarity")
+            raise ValueError("Items must have the same name and rarity")
 
-        return Item(self.name, self.rarity, self.value+other.value)
-
-
+        return Item(self.name, self.rarity, self.value + other.value)
