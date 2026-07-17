@@ -11,7 +11,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator, Iterator
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 
 
 def floor_encounters(floor_number: int, dungeon_log: list[str]) -> Iterator[dict]:
@@ -117,15 +117,40 @@ def guild_transaction(
         the snapshot's contents, then re-raise the exception — do NOT
         suppress it. (Suppressing would mean *not* re-raising; that would
         be the wrong choice here, and worth being able to explain why.)
+
+    Bonus: Nested transactions, extend the treasury system to support: a
+    savepoint, transaction nested inside another transaction where the inner
+    one can roll back independently without undoing the outer one's changes
+    (if the outer one goes on the succeed). Use `contextlib.ExitStack` to
+    manage an arbitray depth of nested `guild_transaction` calls rather than
+    hard-coding two levels.
     """
-    snapshot: dict[str, int] = treasury.copy()
+    if "_snapshots" not in treasury:
+        treasury["_snapshots"] = []
 
-    try:
-        yield treasury
-    except Exception:
-        # restor treasury if exception occurs
-        treasury.clear()
-        treasury.update(snapshot)
+    snapshot: dict[str, int] = {
+        k: v for k, v in treasury.items() if not k.startswith("_")
+    }
+    treasury["_snapshots"].append(snapshot)
 
-        # re-raises the caught exception
-        raise
+    def rollback():
+        for k in list(treasury.keys()):
+            if not k.startswith("_"):
+                del treasury[k]
+        treasury.update(treasury["_snapshots"].pop())
+
+        # Clean up _snapshots if empty
+        if not treasury["_snapshots"]:
+            del treasury["_snapshots"]
+
+    with ExitStack() as stack:
+        stack.callback(rollback)
+        try:
+            yield treasury
+        except Exception:
+            raise
+        else:
+            treasury["_snapshots"].pop()
+            if not treasury["_snapshots"]:
+                del treasury["_snapshots"]
+            stack.pop_all()
