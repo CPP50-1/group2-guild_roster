@@ -41,10 +41,10 @@ def combined_quest_feed() -> Iterator[Quest]:
     return itertools.chain(daily_quests(), guild_quests(), event_quests(),)
 
 
-# --- TODO (Day 3): an infinite source + itertools.islice --------------------
+# --- (Day 3): an infinite source + itertools.islice --------------------
 
 def endless_bounty_quests() -> Iterator[Quest]:
-    """TODO: an intentionally infinite generator (use itertools.count) —
+    """an intentionally infinite generator (use itertools.count) —
     bounty postings that never stop being generated, with a slowly
     increasing reward, e.g. reward_gold = 10 + i * 5 and
     min_level = 1 + i // 3 for i starting at 1.
@@ -57,7 +57,7 @@ def endless_bounty_quests() -> Iterator[Quest]:
 
 
 def first_n_bounties(n: int) -> List[Quest]:
-    """TODO: use itertools.islice to pull exactly n items from
+    """use itertools.islice to pull exactly n items from
     endless_bounty_quests() without ever asking it to produce more than
     that.
     """
