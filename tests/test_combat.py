@@ -13,8 +13,8 @@ def test_battle_priming_and_send():
     assert state["enemy_hp"] == 15
 
     state = fight.send("attack")
-    assert state["enemy_hp"] == 5  # 15 - 10
-    assert "hits Goblin" in log[-2] or any("hits Goblin" in line for line in log)
+    assert state["enemy_hp"] == 9  # 15 - (3*2)
+    assert "pummeled" in log[-2] or any("pummeled" in line for line in log)
 
 
 def test_battle_flee_ends_generator():
@@ -35,7 +35,7 @@ def test_battle_throw_ambush():
     next(fight)
     state = fight.throw(AmbushError())
     assert state["ambushed"] is True
-    assert any("Ambush!" in line for line in log)
+    assert any("sneaky" in line for line in log)
 
 
 def test_battle_close_runs_finally():
