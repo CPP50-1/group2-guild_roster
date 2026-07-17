@@ -86,3 +86,14 @@ def test_roster_sorted_by_level_uses_character_lt():
     high = Mage("Jaina", level=9)
     roster = Roster([high, low])
     assert roster.sorted_by_level() == [low, high]
+
+# --- Roster: slice get_item --------------------
+
+def test_roster_getitem_slice():
+    w, m, r = Warrior("Grom", level=1), Mage("Jaina", level=1), Rogue("Sly", level=1)
+    w2, m2, r2 = Warrior("Morg", level=1), Mage("Aniaj", level=1), Rogue("Yls", level=1)
+    roster = Roster([w, m, r, w2, m2, r2])
+    second_roster = roster[1:4]
+    assert roster[1] == m
+    assert second_roster[0] == m
+    assert second_roster[-1] == w2
