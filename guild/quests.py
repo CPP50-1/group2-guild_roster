@@ -101,12 +101,16 @@ def group_roster_by_role(characters: Iterable[Character]) -> Dict[str, List[Char
 
 
 
-# --- TODO (Day 3): itertools.product -----------------------------------------
+# --- (Day 3): itertools.product -----------------------------------------
 
 def eligible_assignments(
     characters: Iterable[Character], quests: Iterable[Quest]
 ) -> List[tuple]:
-    """TODO: use itertools.product to build every (character, quest) pair,
+    """use itertools.product to build every (character, quest) pair,
     then filter down to pairs where character.level >= quest["min_level"].
     """
-    raise NotImplementedError("TODO (Day 3): implement eligible_assignments")
+    result = []
+    for pair in itertools.product(characters, quests):
+        if pair[0].level >= pair[1]["min_level"]:
+            result.append(pair)
+    return result
