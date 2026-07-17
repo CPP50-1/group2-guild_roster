@@ -83,10 +83,10 @@ def quests_under_budget(quests: Iterable[Quest], budget: int) -> List[Quest]:
     return result
 
 
-# --- TODO (Day 3): itertools.groupby -----------------------------------------
+# --- (Day 3): itertools.groupby -----------------------------------------
 
 def group_roster_by_role(characters: Iterable[Character]) -> Dict[str, List[Character]]:
-    """TODO: sort `characters` by describe_role(), then use
+    """sort `characters` by describe_role(), then use
     itertools.groupby (also keyed by describe_role()) to build a dict of
     role -> list of characters.
 
@@ -94,7 +94,11 @@ def group_roster_by_role(characters: Iterable[Character]) -> Dict[str, List[Char
     without the sort first, characters of the same role that aren't
     adjacent in the input would end up in separate groups.
     """
-    raise NotImplementedError("TODO (Day 3): implement group_roster_by_role")
+    result = {}
+    for key, group in itertools.groupby(characters, key=lambda c: c.describe_role()):
+        result[key] = list(group)
+    return result
+
 
 
 # --- TODO (Day 3): itertools.product -----------------------------------------
