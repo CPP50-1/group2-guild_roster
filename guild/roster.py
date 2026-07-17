@@ -66,6 +66,35 @@ class OrderedSet:
         # early out on first missmatch
         return all(a == b for a, b in zip(self, other))
 
+    def __or__(self, other: OrderedSet) -> OrderedSet:
+        result = OrderedSet()
+        # Adding common items first, then self's, then other's.
+        for item in self:
+            if item in other:
+                result.add(item)
+
+        for item in self:
+            result.add(item)
+
+        for item in other:
+            result.add(item)
+
+        return result
+
+    def __and__(self, other: OrderedSet) -> OrderedSet:
+        result = OrderedSet()
+        for item in self:
+            if item in other:
+                result.add(item)
+        return result
+
+    def __sub__(self, other: OrderedSet) -> OrderedSet:
+        result = OrderedSet()
+        for item in self:
+            if item not in other:
+                result.add(item)
+        return result
+
 
 # --- Dev B: memoized callable ------------------------------------------------
 
