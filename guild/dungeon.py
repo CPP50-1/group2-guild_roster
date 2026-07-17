@@ -7,16 +7,15 @@
    working example of exactly this pattern (a generator wrapped in
    @contextmanager) — before writing this one from scratch.
 """
+
 from __future__ import annotations
 
+from collections.abc import Generator, Iterator
 from contextlib import contextmanager
-from typing import Dict, Iterator, List
 
 
-# --- TODO (Day 3): yield-from delegation + lazy infinite sequence ----------
-
-def floor_encounters(floor_number: int, dungeon_log: List[str]) -> Iterator[Dict]:
-    """TODO: one floor's worth of encounters.
+def floor_encounters(floor_number: int, dungeon_log: list[str]) -> Iterator[dict]:
+    """One floor's worth of encounters.
 
     Requirements:
       - Append "Entering floor N" to dungeon_log at the start.
@@ -60,8 +59,10 @@ def dungeon_floors(dungeon_log: List[str]) -> Iterator[Dict]:
 # --- TODO (Day 3): guild treasury transaction --------------------------------
 
 @contextmanager
-def guild_transaction(treasury: Dict[str, int]) -> Iterator[Dict[str, int]]:
-    """TODO: simulates a database transaction over an in-memory treasury
+def guild_transaction(
+    treasury: dict[str, int],
+) -> Generator[dict[str, int], None, None]:
+    """Simulates a database transaction over an in-memory treasury
     dict — mutations inside the `with` block are kept if the block
     completes without error, and rolled back to the pre-block snapshot if
     it raises.
