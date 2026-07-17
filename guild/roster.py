@@ -94,14 +94,19 @@ class RosterIterator:
         self._index = 0
 
     def __iter__(self) -> "RosterIterator":
-        """TODO (Day 2): an iterator must be iterable (return itself)."""
-        raise NotImplementedError("TODO (Day 2): implement RosterIterator.__iter__")
+        """(Day 2): an iterator must be iterable (return itself)."""
+        return self
 
     def __next__(self) -> Character:
-        """TODO (Day 2): return the next character, advance the index,
+        """(Day 2): return the next character, advance the index,
         raise StopIteration once you've gone past the end.
         """
-        raise NotImplementedError("TODO (Day 2): implement RosterIterator.__next__")
+        if self._index >= len(self._characters):
+            raise StopIteration
+
+        current_character = self._characters[self._index]
+        self._index += 1
+        return current_character
 
 
 class Roster:
@@ -114,45 +119,55 @@ class Roster:
         self._characters: List[Character] = list(characters)
 
     def __getitem__(self, index: int) -> Character:
-        raise NotImplementedError("TODO (Day 2): implement Roster.__getitem__")
+        return self._characters[index]
 
     def __setitem__(self, index: int, value: Character) -> None:
-        """TODO (Day 2): reject non-Character values with a TypeError."""
-        raise NotImplementedError("TODO (Day 2): implement Roster.__setitem__")
+        """(Day 2): reject non-Character values with a TypeError."""
+        if not isinstance(value, Character):
+            raise TypeError(f"{value.__class__.__name__} is not a Character")
+        self._characters[index] = value
 
     def __delitem__(self, index: int) -> None:
-        raise NotImplementedError("TODO (Day 2): implement Roster.__delitem__")
+        self._characters.remove(self._characters[index])
 
     def __contains__(self, item: Character) -> bool:
-        raise NotImplementedError("TODO (Day 2): implement Roster.__contains__")
+        return item in self._characters
 
     def __len__(self) -> int:
-        raise NotImplementedError("TODO (Day 2): implement Roster.__len__")
+        return len(self._characters)
 
     def __iter__(self) -> RosterIterator:
-        """TODO (Day 2): return a RosterIterator over this roster's
+        """(Day 2): return a RosterIterator over this roster's
         characters — this is the connection between the container
         protocol and the from-scratch iterator class above.
         """
-        raise NotImplementedError("TODO (Day 2): implement Roster.__iter__")
+        return RosterIterator(self._characters)
 
     def __repr__(self) -> str:
-        raise NotImplementedError("TODO (Day 2): implement Roster.__repr__")
+        first_results = []
+        is_bigger_than_five = len(self._characters) > 5
+        for i in range(max(5, len(self._characters))):
+            first_results.append(self._characters[i])
+        first_results = "\n".join(first_results)
+        return f"{first_results} and {len(self._characters) - 5} more" if is_bigger_than_five else f"{first_results}"
 
     def add(self, character: Character) -> None:
-        raise NotImplementedError("TODO (Day 2): implement Roster.add")
+        self._characters.append(character)
 
     def alive_characters(self) -> Iterator[Character]:
-        """TODO (Day 2): a generator (use `yield`) that yields only the
+        """(Day 2): a generator (use `yield`) that yields only the
         characters that are currently "truthy" (relies on Character's
         __bool__ from Day 1). Compare, once done, how much shorter this
         is than RosterIterator above — same protocol, very different
         amount of code.
         """
-        raise NotImplementedError("TODO (Day 2): implement Roster.alive_characters")
+        for character in self._characters:
+            if character:
+                yield character
+
 
     def sorted_by_level(self) -> List[Character]:
-        """TODO (Day 2): return characters sorted by level. Should need
+        """(Day 2): return characters sorted by level. Should need
         no key= argument at all if Character.__lt__ (Day 1) is correct.
         """
-        raise NotImplementedError("TODO (Day 2): implement Roster.sorted_by_level")
+        return sorted(self._characters)
