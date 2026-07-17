@@ -21,6 +21,7 @@ class AmbushError(GuildError):
     """Raised into the battle generator to simulate a mid-fight ambush —
     exercises Generator.throw() specifically.
     """
+    pass
 
 
 def battle(
@@ -30,8 +31,53 @@ def battle(
     enemy_hp: int = 30,
     enemy_attack: int = 5,
 ) -> Generator[Dict, str, None]:
-    """TODO (Day 3): a generator-based combat loop.
+    try:
+        combat_log.append(f"{enemy_name} appears!")
+        while character.hp > 0 and enemy_hp > 0:
+            state_snapshot = {
+                "character_hp": character.hp,
+                "enemy_hp": enemy_hp
+            }
+            action = yield state_snapshot
 
+            if action == "attack":
+                enemy_hp -= character.level * 2
+                combat_log.append(f"{enemy_name} got pummeled{f"! They have {enemy_hp} remaining." if enemy_hp > 0 else " to death!"}")
+
+            elif action == "heal":
+                max_hp = character.base_hp * character.level
+                character.hp = min(character.hp + character.level * 2, max_hp)
+                combat_log.append(f"{character.name} is feeling better! HP is now {character.hp}.")
+
+            elif action == "flee":
+                combat_log.append(f"{character.name} flees the battle!")
+                return
+
+            else:
+                combat_log.append(f"Action {action} is not recognized.")
+                # continue (?)
+
+            if enemy_hp <= 0:
+                state_snapshot["outcome"] = "victory"
+
+            if enemy_hp > 0:
+                character.hp -= enemy_attack
+                combat_log.append(f"Ouch! {character.name} is {f"now down to {character.hp} HP" if character.hp > 0 else f"knocked unconscious!"}")
+                if character.hp <= 0:
+                    state_snapshot["outcome"] = "defeat"
+
+        yield {"outcome": "victory" if enemy_hp <= 0 else "defeat"}
+
+    except AmbushError:
+        combat_log.append(f"A sneaky {enemy_name} hit you before you could react!")
+        character.hp -= enemy_attack
+        yield {"ambushed": True}
+
+    finally:
+        combat_log.append("Combat generator closed.")
+
+    """(Day 3): a generator-based combat loop.
+    
     Requirements:
       - Append a "X appears!" style line to combat_log at the start.
       - Loop while both character_hp and enemy_hp are above 0. Each
@@ -58,4 +104,3 @@ def battle(
     generator locals disappear once the frame ends — this is why the log
     needs to live outside the generator itself.
     """
-    raise NotImplementedError("TODO (Day 3): implement battle()")
