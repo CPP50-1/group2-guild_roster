@@ -32,17 +32,13 @@ class OrderedSet:
 
     def add(self, item: any) -> None:
         """(Day 2): add item, no-op if it's already present."""
-        if item in self:
-            return
-
-        self._data[item] = None
+        if item not in self:
+            self._data[item] = None
 
     def discard(self, item: any) -> None:
         """(Day 2): remove item if present; do nothing if it isn't."""
-        if item not in self:
-            return
-
-        self._data.pop(item)
+        if item in self:
+            del self._data[item]
 
     def __contains__(self, item: any) -> bool:
         return item in self._data
