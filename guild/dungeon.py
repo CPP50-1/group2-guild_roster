@@ -118,4 +118,14 @@ def guild_transaction(
         suppress it. (Suppressing would mean *not* re-raising; that would
         be the wrong choice here, and worth being able to explain why.)
     """
-    raise NotImplementedError("TODO (Day 3): implement guild_transaction")
+    snapshot: dict[str, int] = treasury.copy()
+
+    try:
+        yield treasury
+    except Exception:
+        # restor treasury if exception occurs
+        treasury.clear()
+        treasury.update(snapshot)
+
+        # re-raises the caught exception
+        raise
