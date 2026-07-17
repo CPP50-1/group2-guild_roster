@@ -98,8 +98,9 @@ class Character:
         return hash((self.__class__, self.name, self.level))
 
     def __lt__(self, other: object) -> bool:
-        """(Day 1): order by level — this is what lets a Roster
-        TODO(Day 2) be sorted() directly with no key= needed.
+        """ (Day 1): order by level — this is what lets a Roster
+        (Day 2) be sorted() directly with no key= needed.
+        (Day 2 is handled in roster.py)
         """
         if not isinstance(other, Character):
             return NotImplemented
