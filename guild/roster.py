@@ -125,8 +125,13 @@ class Roster:
     def __init__(self, characters: Iterator[Character] = ()):
         self._characters: List[Character] = list(characters)
 
-    def __getitem__(self, index: int) -> Character:
-        return self._characters[index]
+    def __getitem__(self, index: int | slice) -> Character | Roster:
+        if isinstance(index, slice):
+            character_list = self._characters[index]
+            return Roster(character_list)
+        if isinstance(index, int):
+            return self._characters[index]
+        raise TypeError("index must be an int or slice")
 
     def __setitem__(self, index: int, value: Character) -> None:
         """(Day 2): reject non-Character values with a TypeError."""
