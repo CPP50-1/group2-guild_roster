@@ -32,11 +32,45 @@ def floor_encounters(floor_number: int, dungeon_log: list[str]) -> Iterator[dict
         ends via retreat, via clearing it, or via the caller closing the
         whole dungeon mid-floor.
     """
-    raise NotImplementedError("TODO (Day 3): implement floor_encounters")
+    dungeon_log.append(f"Entering floor {floor_number}")
+
+    encounters = [
+        {
+            "floor": floor_number,
+            "type": "monster",
+            "name": f"Monster {floor_number}",
+        },
+        {
+            "floor": floor_number,
+            "type": "loot_chest",
+            "loot": f"{floor_number * 5} golds",
+        },
+    ]
+    if floor_number % 3 == 0:
+        encounters.append(
+            {
+                "floor": floor_number,
+                "type": "trap",
+                "damage": 2 * floor_number,
+            }
+        )
+
+    try:
+        for encounter in encounters:
+            action = yield encounter
+            if action == "retreat":
+                dungeon_log.append(f"Party retreats mid-floor {floor_number}")
+                return "retreated"
+
+        dungeon_log.append(f"Floor {floor_number} cleared")
+        return "cleared"
+
+    finally:
+        dungeon_log.append(f"Leaving floor {floor_number}")
 
 
-def dungeon_floors(dungeon_log: List[str]) -> Iterator[Dict]:
-    """TODO: an intentionally endless generator — there is no fixed last
+def dungeon_floors(dungeon_log: list[str]) -> Iterator[dict]:
+    """An intentionally endless generator — there is no fixed last
     floor, only a floor the party chooses to stop at.
 
     Requirements:
@@ -53,10 +87,18 @@ def dungeon_floors(dungeon_log: List[str]) -> Iterator[Dict]:
         closed." in the finally block — reached both by the `return`
         above and by GeneratorExit (i.e. the caller calling .close()).
     """
-    raise NotImplementedError("TODO (Day 3): implement dungeon_floors")
+    floor_number: int = 1
 
+    try:
+        while True:
+            result = yield from floor_encounters(floor_number, dungeon_log)
+            if result == "retreated":
+                dungeon_log.append("Party returns to town.")
+                return
+            floor_number += 1
+    finally:
+        dungeon_log.append("Dungeon generator closed.")
 
-# --- TODO (Day 3): guild treasury transaction --------------------------------
 
 @contextmanager
 def guild_transaction(
