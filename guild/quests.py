@@ -115,6 +115,8 @@ def group_roster_by_role(characters: Iterable[Character]) -> Dict[str, List[Char
 
 # --- (Day 3): itertools.product -----------------------------------------
 
+# --- (Day 3): itertools.product -----------------------------------------
+
 
 def eligible_assignments(
     characters: Iterable[Character], quests: Iterable[Quest]
