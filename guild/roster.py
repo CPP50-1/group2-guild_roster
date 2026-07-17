@@ -65,14 +65,6 @@ class OrderedSet:
 
         # early out on first missmatch
         return all(a == b for a, b in zip(self, other))
-        if not isinstance(other, Iterator[any]):
-            return False
-
-        if len(self) != len(other):
-            return False
-
-        # early out on first missmatch
-        return all(a == b for a, b in zip(self, other))
 
     def __or__(self, other: OrderedSet) -> OrderedSet:
         result = OrderedSet()
@@ -102,7 +94,6 @@ class OrderedSet:
             if item not in other:
                 result.add(item)
         return result
-
 
 
 # --- Dev B: memoized callable ------------------------------------------------
