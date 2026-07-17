@@ -11,7 +11,7 @@ protocol methods are TODOs.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, Iterator, List
+from typing import Dict, Iterator, List
 
 from .models import Character
 
@@ -25,36 +25,50 @@ class OrderedSet:
     keys of self._data; never store meaningful values in them.
     """
 
-    def __init__(self, items: Iterator[Any] = ()):
-        self._data: Dict[Any, None] = {}
+    def __init__(self, items: Iterator[any] = ()):
+        self._data: dict[any, None] = {}
         for item in items:
             self.add(item)
 
-    def add(self, item: Any) -> None:
-        """TODO (Day 2): add item, no-op if it's already present."""
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.add")
+    def add(self, item: any) -> None:
+        """(Day 2): add item, no-op if it's already present."""
+        if item in self:
+            return
 
-    def discard(self, item: Any) -> None:
-        """TODO (Day 2): remove item if present; do nothing if it isn't."""
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.discard")
+        self._data[item] = None
 
-    def __contains__(self, item: Any) -> bool:
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.__contains__")
+    def discard(self, item: any) -> None:
+        """(Day 2): remove item if present; do nothing if it isn't."""
+        if item not in self:
+            return
 
-    def __iter__(self) -> Iterator[Any]:
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.__iter__")
+        self._data.pop(item)
+
+    def __contains__(self, item: any) -> bool:
+        return item in self._data
+
+    def __iter__(self) -> Iterator[any]:
+        # Delegates to dict's ordered keys via yields
+        yield from self._data
 
     def __len__(self) -> int:
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.__len__")
+        return len(self._data)
 
     def __repr__(self) -> str:
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.__repr__")
+        return f"OrderedSet([{', '.join(repr(item) for item in self)}])"
 
     def __eq__(self, other: object) -> bool:
-        """TODO (Day 2): two OrderedSets are equal if they contain the
+        """(Day 2): two OrderedSets are equal if they contain the
         same items in the same order.
         """
-        raise NotImplementedError("TODO (Day 2): implement OrderedSet.__eq__")
+        if not isinstance(other, Iterator[any]):
+            return False
+
+        if len(self) != len(other):
+            return False
+
+        # early out on first missmatch
+        return all(a == b for a, b in zip(self, other))
 
 
 # --- Dev B: memoized callable ------------------------------------------------
