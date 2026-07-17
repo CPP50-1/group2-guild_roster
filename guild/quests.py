@@ -7,6 +7,7 @@ itertools is a TODO.
 from __future__ import annotations
 
 import itertools
+import random
 from typing import Dict, Iterable, Iterator, List
 
 from .models import Character
@@ -48,7 +49,11 @@ def endless_bounty_quests() -> Iterator[Quest]:
     increasing reward, e.g. reward_gold = 10 + i * 5 and
     min_level = 1 + i // 3 for i starting at 1.
     """
-    raise NotImplementedError("TODO (Day 3): implement endless_bounty_quests")
+    creature = ["bear", "orc", "chief goblin", "bandit leader", "unknown monster"]
+    location = ["Warwick Cave", "the Dark Forest", "Camp Silian", "the swamp"]
+    for i in itertools.count(1):
+        yield {"name": f"Kill the {random.choice(creature)} in {random.choice(location)}",
+               "reward_gold": 10 + i * 5, "min_level": 1 + i//3}
 
 
 def first_n_bounties(n: int) -> List[Quest]:
@@ -56,7 +61,7 @@ def first_n_bounties(n: int) -> List[Quest]:
     endless_bounty_quests() without ever asking it to produce more than
     that.
     """
-    raise NotImplementedError("TODO (Day 3): implement first_n_bounties")
+    return list(itertools.islice(endless_bounty_quests(), n))
 
 
 # --- TODO (Day 3): itertools.takewhile ---------------------------------------
