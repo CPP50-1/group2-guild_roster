@@ -56,7 +56,6 @@ class GuildMeta(type):
         return new_class
 
 
-# (Day 5, last step): once GuildMeta works, change the line below to:
 class CachedProperty:
     # Explain why this only works because it's a *non-data* descriptor, what would break if it also defined `__set__`?
     #
@@ -70,7 +69,7 @@ class CachedProperty:
         return value
 
 
-# TODO (Day 5, last step): once GuildMeta works, change the line below to:
+# (Day 5, last step): once GuildMeta works, change the line below to:
 #     class Character(metaclass=GuildMeta):
 class Character(metaclass=GuildMeta):
     """Base class for every playable character."""
