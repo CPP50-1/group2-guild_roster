@@ -14,7 +14,10 @@ from __future__ import annotations
 from typing import Dict, Generator, List
 
 from .exceptions import GuildError
-from .models import Character
+from .models import Character, Mage, Warrior, Rogue
+
+from itertools import permutations
+from random import randint
 
 
 class AmbushError(GuildError):
@@ -56,9 +59,6 @@ def battle(
             else:
                 combat_log.append(f"Action {action} is not recognized.")
                 # continue (?)
-
-            if enemy_hp <= 0:
-                state_snapshot["outcome"] = "victory"
 
             if enemy_hp > 0:
                 character.hp -= enemy_attack
@@ -104,3 +104,97 @@ def battle(
     generator locals disappear once the frame ends — this is why the log
     needs to live outside the generator itself.
     """
+
+
+# bonus method
+def party_battle(
+        characters: tuple[Character, ...],
+        combat_log: List[str],
+        enemy_name: str = "Goblin",
+        enemy_hp: int = 30,
+        enemy_attack: int = 5,
+) -> Generator[Dict, str, None | int]:
+    try:
+        combat_log.append(f"{enemy_name} appears!")
+        while (characters[0].hp > 0 or characters[1].hp > 0 or characters[2].hp > 0) and enemy_hp > 0:
+            for character in characters:
+                if character.hp <= 0:
+                    continue
+                else:
+                    state_snapshot = {
+                        "character_hp": character.hp,
+                        "enemy_hp": enemy_hp
+                    }
+                    action = yield state_snapshot
+
+                    if action == "attack":
+                        enemy_hp -= character.level * 2
+                        combat_log.append(
+                            f"{enemy_name} got pummeled{f"! They have {enemy_hp} HP remaining." if enemy_hp > 0 else " to death!"}")
+
+                    elif action == "heal":
+                        max_hp = character.base_hp * character.level
+                        character.hp = min(character.hp + character.level * 2, max_hp)
+                        combat_log.append(f"{character.name} is feeling better! HP is now {character.hp}.")
+
+                    elif action == "flee":
+                        combat_log.append(f"{character.name} flees the battle!")
+                        return None
+
+                    else:
+                        combat_log.append(f"Action {action} is not recognized.")
+                        # continue (?)
+
+            if enemy_hp > 0:
+                random_target = characters[randint(0, 2)]
+                while random_target.hp <= 0:
+                    random_target = characters[randint(0, 2)]
+                random_target.hp -= enemy_attack
+                combat_log.append(
+                    f"Ouch! {random_target.name} is {f"now down to {random_target.hp} HP" if random_target.hp > 0 else f"knocked unconscious!"}")
+
+        final_score = sum(character.hp for character in characters) - enemy_hp
+
+        yield {
+            "outcome": "victory" if enemy_hp <= 0 else "defeat",
+            "final_score": final_score
+        }
+
+
+        return final_score
+
+    except AmbushError:
+        random_target = characters[randint(0, 2)]
+        combat_log.append(f"A sneaky {enemy_name} hit {random_target} before you could react!")
+        random_target.hp -= enemy_attack
+        yield {"ambushed": True}
+
+    finally:
+        combat_log.append("Combat generator closed.")
+
+
+# bonus: generating all combinations of 3-character parties and rate them.
+# I chose final HP across the battlefield (negative if enemies win) as measurement.
+
+def determine_best_party(party: List[Character] | None) -> List[tuple[int, tuple[Character, ...]]]:
+    if party is None:
+        party = [Warrior(name="Grom"), Mage(name="Jaina"), Rogue(name="Valeera")]
+    rankings = []
+
+    for permutation in permutations(party):
+        for char in permutation:
+            char.hp = char.base_hp * char.level
+
+        combat_log = []
+        battle_gen = party_battle(characters=permutation, combat_log=combat_log)
+
+        final_snapshot = {}
+        for snapshot in battle_gen:
+            final_snapshot = snapshot  # Keeps overwriting until it holds the last one (which is the one we need here)
+
+        score = final_snapshot.get("final_score", 0)
+        rankings.append((score, permutation))
+
+    rankings.sort(reverse=True, key=lambda entry: entry[0])
+
+    return rankings
