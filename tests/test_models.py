@@ -4,6 +4,7 @@ from guild.models import (
     CachedProperty,
     Character,
     GuildMeta,
+    Healer,
     HealerMixin,
     LoggedMage,
     Mage,
@@ -117,12 +118,14 @@ def test_total_power_depends_on_level_and_base_hp():
 def test_cached_property_returns_self_on_class_access():
     assert isinstance(Character.total_power, CachedProperty)
 
-    
+
 def test_instantiate_by_name():
-    assert isinstance(GuildMeta.create(class_name="Warrior", name="Grom", level=3), Warrior)
+    assert isinstance(
+        GuildMeta.create(class_name="Warrior", name="Grom", level=3), Warrior
+    )
     assert GuildMeta.create(class_name="Wrrior", name="Grom", level=3) is None
 
-    
+
 def test_mro_conflict():
     class A(HealerMixin, TankMixin):
         pass
@@ -153,3 +156,21 @@ def test_register_character_rejects_non_int_base_hp():
 
 def test_register_character_skips_base_class():
     assert "Character" not in register_character.registry
+
+
+def test_paladin_is_healer():
+    p = Paladin("Uther", level=5)
+    assert isinstance(p, Healer)
+
+
+def test_warrior_is_not_healer():
+    w = Warrior("Grom", level=5)
+    assert not isinstance(w, Healer)
+
+
+def test_healer_mixin_subclass_check():
+    assert issubclass(HealerMixin, Healer)
+
+
+def test_paladin_subclass_check():
+    assert issubclass(Paladin, Healer)

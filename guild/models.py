@@ -19,9 +19,14 @@ which of the above TODOs you've reached.
 
 from __future__ import annotations
 
-from typing import Dict, Type
+from typing import Dict, Protocol, Type, runtime_checkable
 
 from .fields import IntField, StringField
+
+
+@runtime_checkable
+class Healer(Protocol):
+    def heal(self, target: Character, amount: int = None) -> int: ...
 
 
 def register_character(cls):
@@ -83,12 +88,11 @@ class GuildMeta(type):
                 mcs.registry[name] = new_class
         return new_class
 
-     #    ** Instantiate by name: ** add a method to `GuildMeta`( or a helper function) that takes a
-     # class name string and constructs an instance,
-     # e.g. `GuildMeta.create("Warrior", name="Grom", level=3)`, looking the
-     # class up in `GuildMeta.registry` rather than importing it directly.This
-     # is close to how Odoo actually instantiates models by their `_name` string at runtime,
-    # and is worth comparing side - by - side with a plain ` if / elif ` chain doing the same dispatch by hand, which one scales better as the number of subclasses grows?
+    #  ** Instantiate by name: ** add a method to `GuildMeta`( or a helper function) that takes a
+    # class name string and constructs an instance, e.g. `GuildMeta.create("Warrior", name="Grom", level=3)`,
+    # looking the class up in `GuildMeta.registry` rather than importing it directly. This is close to how
+    # Odoo actually instantiates models by their `_name` string at runtime, and is worth comparing side-by-side
+    # with a plain ` if / elif ` chain doing the same dispatch by hand, which one scales better as the number of subclasses grows?
     @classmethod
     def create(cls, class_name, **kwargs):
         new_class = cls.registry.get(class_name)
