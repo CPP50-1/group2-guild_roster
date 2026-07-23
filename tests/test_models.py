@@ -11,6 +11,7 @@ from guild.models import (
     Rogue,
     TankMixin,
     Warrior,
+    register_character,
 )
 
 
@@ -116,7 +117,12 @@ def test_total_power_depends_on_level_and_base_hp():
 def test_cached_property_returns_self_on_class_access():
     assert isinstance(Character.total_power, CachedProperty)
 
+    
+def test_instantiate_by_name():
+    assert isinstance(GuildMeta.create(class_name="Warrior", name="Grom", level=3), Warrior)
+    assert GuildMeta.create(class_name="Wrrior", name="Grom", level=3) is None
 
+    
 def test_mro_conflict():
     class A(HealerMixin, TankMixin):
         pass
@@ -128,3 +134,22 @@ def test_mro_conflict():
 
         class C(A, B):
             pass
+
+
+def test_register_character_registers_concrete_subclasses():
+    assert register_character.registry["Warrior"] is Warrior
+    assert register_character.registry["Mage"] is Mage
+    assert register_character.registry["Rogue"] is Rogue
+    assert register_character.registry["Paladin"] is Paladin
+
+
+def test_register_character_rejects_non_int_base_hp():
+    with pytest.raises(TypeError):
+
+        @register_character
+        class Broken(Character):
+            base_hp = "not an int"
+
+
+def test_register_character_skips_base_class():
+    assert "Character" not in register_character.registry
