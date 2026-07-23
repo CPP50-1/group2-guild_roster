@@ -62,9 +62,9 @@ class GuildMeta(type):
      # is close to how Odoo actually instantiates models by their `_name` string at runtime,
     # and is worth comparing side - by - side with a plain ` if / elif ` chain doing the same dispatch by hand, which one scales better as the number of subclasses grows?
     @classmethod
-    def create(cls, class_name, name, level):
+    def create(cls, class_name, **kwargs):
         new_class = cls.registry.get(class_name)
-        return new_class(name, level) if new_class else None
+        return new_class(**kwargs) if new_class else None
 
 
 class CachedProperty:
