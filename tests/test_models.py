@@ -11,6 +11,7 @@ from guild.models import (
     Rogue,
     TankMixin,
     Warrior,
+    register_character,
 )
 
 
@@ -128,3 +129,22 @@ def test_mro_conflict():
 
         class C(A, B):
             pass
+
+
+def test_register_character_registers_concrete_subclasses():
+    assert register_character.registry["Warrior"] is Warrior
+    assert register_character.registry["Mage"] is Mage
+    assert register_character.registry["Rogue"] is Rogue
+    assert register_character.registry["Paladin"] is Paladin
+
+
+def test_register_character_rejects_non_int_base_hp():
+    with pytest.raises(TypeError):
+
+        @register_character
+        class Broken(Character):
+            base_hp = "not an int"
+
+
+def test_register_character_skips_base_class():
+    assert "Character" not in register_character.registry
