@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 from guild.dungeon import dungeon_floors, guild_transaction
@@ -118,3 +120,19 @@ def test_nested_transaction_metadata_isolation():
     # User keys only
     assert set(treasury.keys()) == {"gold"}
     assert "_snapshots" not in treasury
+
+
+def test_guild_transaction_rollback_calls_update():
+    class SpyDict(dict):
+        pass
+
+    treasury = SpyDict({"gold": 100, "items": 5})
+    original_update = treasury.update
+    treasury.update = Mock(wraps=original_update)
+
+    with pytest.raises(ValueError):
+        with guild_transaction(treasury) as t:
+            t["gold"] -= 30
+            raise ValueError("rollback")
+
+    treasury.update.assert_called_once()
