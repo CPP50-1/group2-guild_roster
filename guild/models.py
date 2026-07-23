@@ -142,7 +142,7 @@ class Rogue(Character):
 
 
 class HealerMixin:
-    """TODO (Day 4, Dev A/whoever owns this): adds healing behavior.
+    """(Day 4, Dev A/whoever owns this): adds healing behavior.
 
     describe_role() must call super().describe_role() and append
     " + Healer" to whatever it returns — this is deliberate: it's one
@@ -157,10 +157,14 @@ class HealerMixin:
     heal_power: int = 5
 
     def describe_role(self) -> str:
-        raise NotImplementedError("TODO (Day 4): implement HealerMixin.describe_role")
+        return super().describe_role() + " + Healer"
 
     def heal(self, target: "Character", amount: int = None) -> int:
-        raise NotImplementedError("TODO (Day 4): implement HealerMixin.heal")
+        if amount is None:
+            amount = self.heal_power
+        hp_ceil = target.base_hp * target.level
+        target.hp = min(hp_ceil, target.hp + amount)
+        return target.hp
 
 
 class TankMixin:
