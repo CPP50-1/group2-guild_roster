@@ -198,7 +198,7 @@ class Paladin(HealerMixin, TankMixin, Warrior):
 
 
 class LoggableMixin:
-    """TODO (Day 4, other dev): logs every attribute assignment on the
+    """(Day 4): logs every attribute assignment on the
     instance into self._log (a list of strings).
 
     Two things to get right:
@@ -213,16 +213,19 @@ class LoggableMixin:
     `log` should be a read-only property returning a copy of the list
     (not the live list itself).
     """
+    _log: list
 
     def __init__(self, *args, **kwargs):
-        raise NotImplementedError("TODO (Day 4): implement LoggableMixin.__init__")
+        self.__dict__["_log"] = [] # using __dict__ will prevent infinite calls to __setattr__ that self._log = [] would not
+        super().__init__(*args, **kwargs)
 
     def __setattr__(self, name: str, value) -> None:
-        raise NotImplementedError("TODO (Day 4): implement LoggableMixin.__setattr__")
+        self._log.append(f"{name} = {value!r}")
+        super().__setattr__(name, value)
 
     @property
     def log(self) -> list:
-        raise NotImplementedError("TODO (Day 4): implement LoggableMixin.log")
+        return list(self._log)
 
 
 class LoggedMage(LoggableMixin, Mage):
