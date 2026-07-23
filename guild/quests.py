@@ -4,6 +4,7 @@ The three quest-source generators below are given (they're just static
 data). Everything that actually combines/filters/groups them using
 itertools is a TODO.
 """
+
 from __future__ import annotations
 
 import itertools
@@ -16,6 +17,7 @@ Quest = Dict[str, object]
 
 
 # --- Static quest sources, given -------------------------------------------
+
 
 def daily_quests() -> Iterator[Quest]:
     yield {"name": "Clear the Rat Cellar", "reward_gold": 20, "min_level": 1}
@@ -33,15 +35,21 @@ def event_quests() -> Iterator[Quest]:
 
 # --- (Day 3): combine sources with itertools.chain ---------------------
 
+
 def combined_quest_feed() -> Iterator[Quest]:
     """use itertools.chain to treat the three quest sources above as
     one continuous stream, without materializing any of them into a
     combined list first.
     """
-    return itertools.chain(daily_quests(), guild_quests(), event_quests(),)
+    return itertools.chain(
+        daily_quests(),
+        guild_quests(),
+        event_quests(),
+    )
 
 
 # --- (Day 3): an infinite source + itertools.islice --------------------
+
 
 def endless_bounty_quests() -> Iterator[Quest]:
     """an intentionally infinite generator (use itertools.count) —
@@ -52,8 +60,11 @@ def endless_bounty_quests() -> Iterator[Quest]:
     creature = ["bear", "orc", "chief goblin", "bandit leader", "unknown monster"]
     location = ["Warwick Cave", "the Dark Forest", "Camp Silian", "the swamp"]
     for i in itertools.count(1):
-        yield {"name": f"Kill the {random.choice(creature)} in {random.choice(location)}",
-               "reward_gold": 10 + i * 5, "min_level": 1 + i//3}
+        yield {
+            "name": f"Kill the {random.choice(creature)} in {random.choice(location)}",
+            "reward_gold": 10 + i * 5,
+            "min_level": 1 + i // 3,
+        }
 
 
 def first_n_bounties(n: int) -> List[Quest]:
@@ -65,6 +76,7 @@ def first_n_bounties(n: int) -> List[Quest]:
 
 
 # --- (Day 3): itertools.takewhile ---------------------------------------
+
 
 def quests_under_budget(quests: Iterable[Quest], budget: int) -> List[Quest]:
     """sort `quests` by reward_gold ascending, then use
@@ -85,6 +97,7 @@ def quests_under_budget(quests: Iterable[Quest], budget: int) -> List[Quest]:
 
 # --- (Day 3): itertools.groupby -----------------------------------------
 
+
 def group_roster_by_role(characters: Iterable[Character]) -> Dict[str, List[Character]]:
     """sort `characters` by describe_role(), then use
     itertools.groupby (also keyed by describe_role()) to build a dict of
@@ -100,8 +113,10 @@ def group_roster_by_role(characters: Iterable[Character]) -> Dict[str, List[Char
     return result
 
 
+# --- (Day 3): itertools.product -----------------------------------------
 
 # --- (Day 3): itertools.product -----------------------------------------
+
 
 def eligible_assignments(
     characters: Iterable[Character], quests: Iterable[Quest]

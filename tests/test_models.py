@@ -116,6 +116,20 @@ def test_total_power_depends_on_level_and_base_hp():
 def test_cached_property_returns_self_on_class_access():
     assert isinstance(Character.total_power, CachedProperty)
 
+    
 def test_instantiate_by_name():
     assert isinstance(GuildMeta.create(class_name="Warrior", name="Grom", level=3), Warrior)
     assert GuildMeta.create(class_name="Wrrior", name="Grom", level=3) is None
+
+    
+def test_mro_conflict():
+    class A(HealerMixin, TankMixin):
+        pass
+
+    class B(TankMixin, HealerMixin):
+        pass
+
+    with pytest.raises(TypeError, match="consistent method resolution order"):
+
+        class C(A, B):
+            pass
