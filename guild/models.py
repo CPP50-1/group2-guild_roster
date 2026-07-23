@@ -25,7 +25,7 @@ from .fields import IntField, StringField
 
 
 class GuildMeta(type):
-    """TODO (Day 5): a metaclass that automatically registers every
+    """(Day 5): a metaclass that automatically registers every
     concrete Character subclass by name — direct analogue of how Odoo's
     ORM collects model classes into its model registry at class-creation
     time, not at instantiation time.
@@ -47,12 +47,18 @@ class GuildMeta(type):
     registry: Dict[str, Type["Character"]] = {}
 
     def __new__(mcs, name, bases, namespace, **kwargs):
-        raise NotImplementedError("TODO (Day 5): implement GuildMeta.__new__")
+        new_class = super().__new__(mcs, name, bases, namespace, **kwargs)
+        if bases :
+            if type(namespace.get("base_hp", 0)) is not int:
+                raise TypeError("Health must be integer")
+            else:
+                mcs.registry[name] = new_class
+        return new_class
 
 
-# TODO (Day 5, last step): once GuildMeta works, change the line below to:
+# (Day 5, last step): once GuildMeta works, change the line below to:
 #     class Character(metaclass=GuildMeta):
-class Character:
+class Character(metaclass=GuildMeta):
     """Base class for every playable character."""
 
     name = StringField(max_length=50)
