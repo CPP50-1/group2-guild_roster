@@ -1,9 +1,11 @@
+import pytest
+
 from guild.items import Item, Rarity
 
 
 def test_repr_and_str_differ():
     item = Item("Iron Sword", Rarity.COMMON, 10)
-    assert repr(item) == "Item(name='Iron Sword', rarity=COMMON, value=10)"
+    assert repr(item) == "Item(name='Iron Sword', rarity=<Rarity.COMMON: 1>, value=10)"
     assert str(item) == "Iron Sword (Common, 10g)"
 
 
@@ -41,3 +43,25 @@ def test_add_valid():
     b = Item("Iron Sword", Rarity.COMMON, 10)  # equal to a
     c = a + b
     assert (c.name, c.rarity, c.value) == ("Iron Sword", Rarity.COMMON, 25)
+
+
+@pytest.mark.parametrize("name", ["", None])
+def test_empty_name_raises(name):
+    with pytest.raises(ValueError):
+        Item(name, Rarity.COMMON, 10)
+
+
+@pytest.mark.parametrize("rarity", [99, "COMMON"])
+def test_invalid_rarity_raises(rarity):
+    with pytest.raises(TypeError):
+        Item("Sword", rarity, 10)
+
+
+def test_negative_value_raises():
+    with pytest.raises(ValueError):
+        Item("Sword", Rarity.COMMON, -5)
+
+
+def test_zero_value_is_valid():
+    item = Item("Junk", Rarity.COMMON, 0)
+    assert item.value == 0
