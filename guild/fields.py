@@ -104,7 +104,7 @@ class IntField(Validated):
 
 
 class FloatField(Validated):
-    """TODO (Day 4): implement this the same way IntField is implemented
+    """(Day 4): implement this the same way IntField is implemented
     above, but accepting float values. Remember that in Python, an int
     passed where a float is expected is usually fine (3 is a valid
     "float-ish" value) — decide whether you want to accept plain ints too,
@@ -112,4 +112,4 @@ class FloatField(Validated):
     """
 
     def __init__(self, required: bool = True, minimum: Optional[float] = None, maximum: Optional[float] = None):
-        raise NotImplementedError("TODO (Day 4): implement FloatField.__init__")
+        super().__init__(expected_type=float, required=required, minimum=minimum, maximum=maximum)
