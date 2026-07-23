@@ -50,6 +50,19 @@ class GuildMeta(type):
         raise NotImplementedError("TODO (Day 5): implement GuildMeta.__new__")
 
 
+class CachedProperty:
+    # Explain why this only works because it's a *non-data* descriptor, what would break if it also defined `__set__`?
+    #
+    # It would become a data descriptor. calling __get__ at every call instead of reading __dict__, because Python checks
+    # the data descriptor before checking the instance dict.
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        value = obj.level * 5 * (obj.base_hp % 4)
+        obj.__dict__["total_power"] = value
+        return value
+
+
 # TODO (Day 5, last step): once GuildMeta works, change the line below to:
 #     class Character(metaclass=GuildMeta):
 class Character:
@@ -58,7 +71,7 @@ class Character:
     name = StringField(max_length=50)
     hp = IntField(minimum=0)
     level = IntField(minimum=1, maximum=100)
-
+    total_power = CachedProperty()
     base_hp: int = 10  # overridden by every concrete subclass
 
     def __init__(self, name: str, level: int = 1):
@@ -98,7 +111,7 @@ class Character:
         return hash((self.__class__, self.name, self.level))
 
     def __lt__(self, other: object) -> bool:
-        """ (Day 1): order by level — this is what lets a Roster
+        """(Day 1): order by level — this is what lets a Roster
         (Day 2) be sorted() directly with no key= needed.
         (Day 2 is handled in roster.py)
         """
@@ -217,10 +230,12 @@ class LoggableMixin:
     `log` should be a read-only property returning a copy of the list
     (not the live list itself).
     """
+
     _log: list
 
     def __init__(self, *args, **kwargs):
-        self.__dict__["_log"] = [] # using __dict__ will prevent infinite calls to __setattr__ that self._log = [] would not
+        # using __dict__ will prevent infinite calls to __setattr__ that self._log = [] would not
+        self.__dict__["_log"] = []
         super().__init__(*args, **kwargs)
 
     def __setattr__(self, name: str, value) -> None:
