@@ -10,8 +10,9 @@ together and stay consistent, or Item becomes unusable in sets/dicts.
 
 from __future__ import annotations
 
-from functools import total_ordering
+from dataclasses import dataclass
 from enum import IntEnum
+from functools import total_ordering
 
 
 class Rarity(IntEnum):
@@ -27,6 +28,7 @@ class Rarity(IntEnum):
 
 
 @total_ordering
+@dataclass(frozen=True)
 class Item:
     """An inventory item, ordered first by rarity then by value.
 
@@ -35,17 +37,9 @@ class Item:
     __ge__ yourself.
     """
 
-    def __init__(self, name: str, rarity: Rarity, value: int):
-        self.name = name
-        self.rarity = rarity
-        self.value = value
-
-    def __repr__(self) -> str:
-        """
-        Unambiguous, reconstructable representation of Item.
-            should look like: Item(name='Iron Sword', rarity=COMMON, value=10)
-        """
-        return f"{self.__class__.__name__}(name={self.name!r}, rarity={self.rarity.name}, value={self.value})"
+    name: str
+    rarity: Rarity
+    value: int
 
     def __str__(self) -> str:
         """
@@ -53,25 +47,6 @@ class Item:
                 should look like: Iron Sword (Common, 10g)
         """
         return f"{self.name} ({self.rarity.name.capitalize()}, {self.value}g)"
-
-    def __eq__(self, other: object) -> bool:
-        """(Day 1): two Items are equal when name, rarity AND value
-        all match. Remember to return NotImplemented (not False) if
-        `other` isn't an Item.
-        """
-        if not isinstance(other, Item):
-            return NotImplemented
-        return (
-            self.rarity == other.rarity
-            and self.value == other.value
-            and self.name == other.name
-        )
-
-    def __hash__(self) -> int:
-        """(Day 1): must stay consistent with __eq__ above — equal
-        Items must hash equal, or sets/dicts of Item will misbehave.
-        """
-        return hash((self.name, self.rarity, self.value))
 
     def __lt__(self, other: object) -> bool:
         """(Day 1): order by rarity first, then value as a tiebreaker.
@@ -102,3 +77,13 @@ class Item:
             raise ValueError("Items must have the same name and rarity")
 
         return Item(self.name, self.rarity, self.value + other.value)
+
+    def __post_init__(self):
+        if not self.name:
+            raise ValueError("name cannot be empty")
+
+        if self.rarity not in Rarity:
+            raise TypeError("rariry is not part of Rariry enum")
+
+        if self.value < 0:
+            raise ValueError("value should be supperior to 0")
