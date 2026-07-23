@@ -55,6 +55,17 @@ class GuildMeta(type):
                 mcs.registry[name] = new_class
         return new_class
 
+     #    ** Instantiate by name: ** add a method to `GuildMeta`( or a helper function) that takes a
+     # class name string and constructs an instance,
+     # e.g. `GuildMeta.create("Warrior", name="Grom", level=3)`, looking the
+     # class up in `GuildMeta.registry` rather than importing it directly.This
+     # is close to how Odoo actually instantiates models by their `_name` string at runtime,
+    # and is worth comparing side - by - side with a plain ` if / elif ` chain doing the same dispatch by hand, which one scales better as the number of subclasses grows?
+    @classmethod
+    def create(cls, class_name, **kwargs):
+        new_class = cls.registry.get(class_name)
+        return new_class(**kwargs) if new_class else None
+
 
 class CachedProperty:
     # Explain why this only works because it's a *non-data* descriptor, what would break if it also defined `__set__`?
