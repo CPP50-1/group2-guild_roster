@@ -24,6 +24,34 @@ from typing import Dict, Type
 from .fields import IntField, StringField
 
 
+def register_character(cls):
+    """Class decorator alternative: the Day 5 theory names class decorators
+    as a simpler alternative to metaclasses for some use cases. Write a
+    @register_character class decorator that does the same registration
+    GuildMeta does (add the class to a registry dict by name), without a
+    metaclass at all. Get it working, then write down two or three sentences
+    on when you'd reach for the decorator instead of the metaclass, what can
+    a metaclass do that a class decorator structurally can't?
+    """
+    # Use a class decorator (@register_character) when you only need to do
+    # something basic AFTER the class is built, like saving it in a list.
+    # Use a metaclass (GuildMeta) when you need to change how the class is
+    # built. A decorator can only see the finished class; a metaclass can
+    # also make sure every subclass follows the same rules automatically.
+    if cls is not Character:
+        if not isinstance(cls.base_hp, int):
+            raise TypeError("Health must be integer")
+
+        class_name = cls.__name__
+        if class_name not in register_character.registry:
+            register_character.registry[cls.__name__] = cls
+
+    return cls
+
+
+register_character.registry: dict[str, Type[Character]] = {}
+
+
 class GuildMeta(type):
     """(Day 5): a metaclass that automatically registers every
     concrete Character subclass by name — direct analogue of how Odoo's
@@ -48,7 +76,7 @@ class GuildMeta(type):
 
     def __new__(mcs, name, bases, namespace, **kwargs):
         new_class = super().__new__(mcs, name, bases, namespace, **kwargs)
-        if bases :
+        if bases:
             if type(namespace.get("base_hp", 0)) is not int:
                 raise TypeError("Health must be integer")
             else:
@@ -147,6 +175,7 @@ class Character(metaclass=GuildMeta):
         return str(self)
 
 
+@register_character
 class Warrior(Character):
     base_hp = 15
 
@@ -154,6 +183,7 @@ class Warrior(Character):
         return "Warrior"
 
 
+@register_character
 class Mage(Character):
     base_hp = 8
 
@@ -161,6 +191,7 @@ class Mage(Character):
         return "Mage"
 
 
+@register_character
 class Rogue(Character):
     base_hp = 10
 
@@ -217,6 +248,7 @@ class TankMixin:
         return list(enemies)
 
 
+@register_character
 class Paladin(HealerMixin, TankMixin, Warrior):
     """The deliberate mixin conflict. Once HealerMixin and TankMixin are
     implemented above, run Paladin.__mro__ and Paladin("x").describe_role()
@@ -264,5 +296,6 @@ class LoggableMixin:
         return list(self._log)
 
 
+@register_character
 class LoggedMage(LoggableMixin, Mage):
     """Demo combination used by the test suite / workshop walkthrough."""
